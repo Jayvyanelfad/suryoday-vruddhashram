@@ -1,0 +1,80 @@
+export const galleryImages = [
+  {
+    id: 1,
+    title_en: "Daily Activities & Companionship",
+    title_hi: "दैनिक गतिविधियां और साहचर्य",
+    title_mr: "दैनंदिन क्रियाकलाप आणि साथ",
+    description_en: "Residents enjoying quality time together, engaging in recreational activities, games, and social gatherings that promote wellness and happiness.",
+    description_hi: "निवासी एक साथ गुणवत्तापूर्ण समय बिताते हैं, मनोरंजन गतिविधियों, खेल और सामाजिक समारोहों में भाग लेते हैं।",
+    description_mr: "रहिवासी एकत्रितपणे गुणवत्तेचा वेळ घालवतात, मनोरंजनात्मक क्रियाकलाप, खेळ आणि सामाजिक समारंभांमध्ये भाग घेतात.",
+    image: "/gallery/activities.jpg",
+    category_en: "Activities",
+    category_hi: "गतिविधियाँ",
+    category_mr: "क्रियाकलाप"
+  },
+  {
+    id: 2,
+    title_en: "Healthcare & Wellness",
+    title_hi: "स्वास्थ्य सेवा और कल्याण",
+    title_mr: "आरोग्य सेवा आणि कल्याण",
+    description_en: "Medical professionals providing regular health check-ups, medication management, and wellness programs for optimal health and well-being of residents.",
+    description_hi: "चिकित्सा पेशेवर नियमित स्वास्थ्य जांच, दवा प्रबंधन और कल्याण कार्यक्रम प्रदान करते हैं।",
+    description_mr: "वैद्यकीय व्यावसायिक नियमित आरोग्य तपासणी, औषध व्यवस्थापन आणि कल्याण कार्यक्रम प्रदान करतात.",
+    image: "/gallery/healthcare.jpg",
+    category_en: "Healthcare",
+    category_hi: "स्वास्थ्य सेवा",
+    category_mr: "आरोग्य सेवा"
+  },
+  {
+    id: 3,
+    title_en: "Nutritious Meals",
+    title_hi: "पौष्टिक भोजन",
+    title_mr: "पौष्टिक जेवण",
+    description_en: "Balanced and nutritious meals prepared daily by our kitchen staff, considering dietary needs and preferences of each resident.",
+    description_hi: "हमारी रसोई कर्मचारी द्वारा तैयार संतुलित और पौष्टिक भोजन, प्रत्येक निवासी की आहार संबंधी आवश्यकताओं को ध्यान में रखते हुए।",
+    description_mr: "आमच्या रसोई कर्मचारींद्वारे तैयार संतुलित आणि पौष्टिक जेवण, प्रत्येक रहिवाश्याच्या आहार संबंधी गरजा लक्षात घेऊन.",
+    image: "/gallery/meals.jpg",
+    category_en: "Meals",
+    category_hi: "भोजन",
+    category_mr: "जेवण"
+  },
+  {
+    id: 4,
+    title_en: "Celebrations & Festivals",
+    title_hi: "समारोह और त्योहार",
+    title_mr: "समारंभ आणि सण",
+    description_en: "Joyful celebrations of Indian festivals, birthdays, and special occasions creating moments of happiness and community bonding among residents.",
+    description_hi: "भारतीय त्योहारों, जन्मदिनों और विशेष अवसरों के आनंदमय समारोह निवासियों के बीच खुशी और सामुदायिक बंधन बनाते हैं।",
+    description_mr: "भारतीय सणांचे, जन्मदिनांचे आणि विशेष प्रसंगांचे आनंदमय समारंभ रहिवाश्यांमध्ये खुशी आणि समाज बंध निर्माण करतात.",
+    image: "/gallery/celebrations.jpg",
+    category_en: "Celebrations",
+    category_hi: "समारोह",
+    category_mr: "समारंभ"
+  },
+  {
+    id: 5,
+    title_en: "Facility & Amenities",
+    title_hi: "सुविधाएं और सामग्री",
+    title_mr: "सुविधा आणि साधन",
+    description_en: "Well-maintained, comfortable, and hygienic living spaces designed to ensure dignity, safety, and comfort for all our elderly residents.",
+    description_hi: "अच्छी तरह से रखरखाव, आरामदायक और स्वच्छ रहने की जगह जो बुजुर्गों की गरिमा, सुरक्षा सुनिश्चित करती है।",
+    description_mr: "सुव्यवस्थितपणे राखरखाव केलेले, आरामदायक आणि स्वच्छ रहण्याची जागा जी वृद्धांची गरिमा, सुरक्षा सुनिश्चित करते.",
+    image: "/gallery/facility.jpg",
+    category_en: "Facility",
+    category_hi: "सुविधा",
+    category_mr: "सुविधा"
+  },
+  {
+    id: 6,
+    title_en: "Volunteer Work & Community",
+    title_hi: "स्वयंसेवी कार्य और समुदाय",
+    title_mr: "स्वयंसेवी कार्य आणि समुदाय",
+    description_en: "Dedicated volunteers spending quality time with residents, providing companionship, emotional support, and activities that enrich their lives.",
+    description_hi: "समर्पित स्वयंसेवक निवासियों के साथ गुणवत्तापूर्ण समय बिताते हैं, साहचर्य और भावनात्मक समर्थन प्रदान करते हैं।",
+    description_mr: "समर्पित स्वयंसेवक रहिवाश्यांसह गुणवत्तेचा वेळ घालवतात, साथ आणि भावनिक समर्थन प्रदान करतात.",
+    image: "/gallery/volunteers.jpg",
+    category_en: "Community",
+    category_hi: "समुदाय",
+    category_mr: "समुदाय"
+  }
+];
