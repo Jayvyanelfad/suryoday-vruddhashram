@@ -1,10 +1,20 @@
 'use client';
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Mail, Phone, MessageCircle, MapPin } from "lucide-react";
 
 export default function ContactSection({ content }) {
+  const [phoneNumber, setPhoneNumber] = useState("+91 9604516653");
+
+  useEffect(() => {
+    // Load custom phone from admin dashboard
+    const savedPhone = localStorage.getItem('contactPhone');
+    if (savedPhone) {
+      setPhoneNumber(savedPhone);
+    }
+  }, []);
+
   const contactInfo = [
     {
       icon: Mail,
@@ -16,8 +26,8 @@ export default function ContactSection({ content }) {
     {
       icon: Phone,
       label: content.contact.phone.label,
-      value: "+91 9604516653",
-      href: "tel:+919604516653",
+      value: phoneNumber,
+      href: `tel:${phoneNumber}`,
       color: "text-green-500"
     },
     {
@@ -31,7 +41,8 @@ export default function ContactSection({ content }) {
 
   const handleWhatsAppClick = () => {
     const message = encodeURIComponent(content.contact.whatsapp.message);
-    window.open(`https://wa.me/919604516653?text=${message}`, '_blank');
+    const phoneDigits = phoneNumber.replace(/[^0-9]/g, '');
+    window.open(`https://wa.me/${phoneDigits}?text=${message}`, '_blank');
   };
 
   return (

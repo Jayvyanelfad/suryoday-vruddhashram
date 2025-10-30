@@ -69,9 +69,18 @@ export default function Footer({ content }) {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="border-t border-gray-800 pt-8 text-gray-400 text-sm"
+            className="border-t border-gray-800 pt-8 text-gray-400 text-sm space-y-3"
           >
             <p>{content.footer.copyright}</p>
+            {/* Admin Link - Hidden for security */}
+            <div className="mt-6 pt-4 border-t border-gray-800">
+              <a
+                href="/admin"
+                className="text-xs text-gray-600 hover:text-gray-400 transition-colors"
+              >
+                Admin Access
+              </a>
+            </div>
           </motion.div>
         </motion.div>
       </div>
