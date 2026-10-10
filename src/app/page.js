@@ -342,40 +342,42 @@ export default function HomePage() {
       )}
 
       <section id="main-content" tabIndex="-1" className="hero-section">
-        <div className="section-shell hero-grid">
-          <div className="hero-copy">
-            <p className="eyebrow"><Sparkles aria-hidden="true" className="h-4 w-4" />{content.hero.eyebrow}</p>
-            <h1 className="editorial-title text-balance">
-              {content.hero.title}
-            </h1>
-            <p className="hero-description">
-              {content.hero.description}
-            </p>
-            <div className="hero-actions">
-              <a href="#contact" className="primary-button inline-flex items-center justify-center gap-2">
-                {content.hero.primary}
-                <ArrowRight className="h-4 w-4" />
-              </a>
-              <a href="#about" className="secondary-button inline-flex items-center justify-center gap-2">
-                {content.hero.secondary}
-              </a>
+        <div className="section-shell">
+          <div className="hero-grid">
+            <div className="hero-copy">
+              <p className="eyebrow"><Sparkles aria-hidden="true" className="h-4 w-4" />{content.hero.eyebrow}</p>
+              <h1 className="editorial-title text-balance">
+                {content.hero.title}
+              </h1>
+              <p className="hero-description">
+                {content.hero.description}
+              </p>
+              <div className="hero-actions">
+                <a href="#contact" className="primary-button inline-flex items-center justify-center gap-2">
+                  {content.hero.primary}
+                  <ArrowRight className="h-4 w-4" />
+                </a>
+                <a href="#about" className="secondary-button inline-flex items-center justify-center gap-2">
+                  {content.hero.secondary}
+                </a>
+              </div>
+              <p className="hero-signature">{organizationName}<span aria-hidden="true"> · </span>{contactAddress.split(',').slice(-2).join(',').trim()}</p>
             </div>
-            <p className="hero-signature">{organizationName}<span aria-hidden="true"> · </span>{contactAddress.split(',').slice(-2).join(',').trim()}</p>
-          </div>
 
-          <figure className="hero-photo">
-            <div className="hero-photo-frame">
-              <Image
-                src={stockImages.hero}
-                alt={language === 'hi' ? 'भारतीय बुज़ुर्ग दंपति का प्रतिनिधि स्टॉक फ़ोटो; वे सूर्योदय के निवासी नहीं हैं।' : language === 'mr' ? 'भारतीय ज्येष्ठ जोडप्याचे प्रतिनिधिक स्टॉक छायाचित्र; ते सूर्योदयचे रहिवासी नाहीत.' : 'Representative stock photograph of an Indian older couple sharing a quiet moment outdoors; they are not Suryoday residents.'}
-                fill
-                sizes="(max-width: 768px) 100vw, 54vw"
-                className="object-cover"
-                priority
-              />
-            </div>
-            <figcaption><span>{content.stockNote}</span><a href="https://www.pexels.com/photo/portrait-of-elderly-couple-in-traditional-clothing-19811308/" target="_blank" rel="noreferrer">Photo: Ekam Juneja / Pexels</a></figcaption>
-          </figure>
+            <figure className="hero-photo">
+              <div className="hero-photo-frame">
+                <Image
+                  src={stockImages.hero}
+                  alt={language === 'hi' ? 'भारतीय बुज़ुर्ग दंपति का प्रतिनिधि स्टॉक फ़ोटो; वे सूर्योदय के निवासी नहीं हैं।' : language === 'mr' ? 'भारतीय ज्येष्ठ जोडप्याचे प्रतिनिधिक स्टॉक छायाचित्र; ते सूर्योदयचे रहिवासी नाहीत.' : 'Representative stock photograph of an Indian older couple sharing a quiet moment outdoors; they are not Suryoday residents.'}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 54vw"
+                  className="object-cover"
+                  priority
+                />
+              </div>
+              <figcaption><span>{content.stockNote}</span><a href="https://www.pexels.com/photo/portrait-of-elderly-couple-in-traditional-clothing-19811308/" target="_blank" rel="noreferrer">Photo: Ekam Juneja / Pexels</a></figcaption>
+            </figure>
+          </div>
         </div>
       </section>
 
