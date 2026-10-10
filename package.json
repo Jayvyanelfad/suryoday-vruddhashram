@@ -2,11 +2,14 @@
   "name": "hope-charity-rebuild",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "node --test \"tests/*.test.mjs\"",
+    "admin:hash": "node scripts/generate-admin-hash.mjs"
   },
   "dependencies": {
     "class-variance-authority": "^0.7.1",

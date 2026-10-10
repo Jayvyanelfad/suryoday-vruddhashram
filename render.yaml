@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: suryoday-vruddhashram
+    runtime: node
+    plan: starter
+    buildCommand: npm ci && npm run build
+    startCommand: npm run start
+    healthCheckPath: /api/site
+    disk:
+      name: site-content
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: SITE_CONTENT_PATH
+        value: /var/data/site-content.json
+      - key: ADMIN_USERNAME
+        sync: false
+      - key: ADMIN_PASSWORD_HASH
+        sync: false
+      - key: ADMIN_SECRET
+        sync: false
