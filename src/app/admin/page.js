@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
+import { stockImages } from '@/lib/stock-photography';
 
 const emptySite = {
   brand: { name: 'Suryoday Vruddhashram', subtitle: 'Care rooted in dignity, warmth, and belonging' },
@@ -27,14 +28,15 @@ const emptySite = {
     { id: 'community', value: 'Community', label: 'Companionship', description: 'A welcoming environment for connection and belonging.' },
   ],
   gallery: [
-    { id: 'g1', title: 'Daily companionship', description: 'Residents share meaningful time together in a calm, welcoming setting.', image: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=900&q=80' },
-    { id: 'g2', title: 'Wellbeing support', description: 'Compassionate care and daily routines designed around comfort.', image: 'https://images.unsplash.com/photo-1544022592-4f1881e4ca34?auto=format&fit=crop&w=900&q=80' },
-    { id: 'g3', title: 'Nutritious meals', description: 'Fresh meals and hydration support for regular wellness.', image: 'https://images.unsplash.com/photo-1556911220-bff31c812dba?auto=format&fit=crop&w=900&q=80' },
+    { id: 'g1', title: 'Indian elders sharing a moment', description: 'Illustrative stock photography; not a photograph of Suryoday residents.', image: stockImages.community },
+    { id: 'g2', title: 'An older woman and a young family member', description: 'Illustrative stock photography; not a photograph of Suryoday residents.', image: stockImages.family },
+    { id: 'g3', title: 'An older man enjoying time outdoors', description: 'Illustrative stock photography; not a photograph of Suryoday residents.', image: stockImages.dailyLife },
+    { id: 'g4', title: 'An older woman outdoors in India', description: 'Illustrative stock photography; not a photograph of Suryoday residents.', image: stockImages.elderWoman },
   ],
   team: [
-    { id: 't1', name: 'Organization leadership', role: 'Care coordination', description: 'Coordinates resident support and community partnerships.', image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=900&q=80' },
-    { id: 't2', name: 'Care Team', role: 'Resident support', description: 'Daily personal care, empathy, and practical support for a safe, dignified routine.', image: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=900&q=80' },
-    { id: 't3', name: 'Wellbeing Team', role: 'Health & nutrition', description: 'Monitoring health needs, nourishment, and comfort to support better daily wellbeing.', image: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=900&q=80' },
+    { id: 't1', name: 'Organization leadership', role: 'Care coordination', description: 'Coordinates resident support and community partnerships.', image: '' },
+    { id: 't2', name: 'Care Team', role: 'Resident support', description: 'Daily personal care, empathy, and practical support for a safe, dignified routine.', image: '' },
+    { id: 't3', name: 'Wellbeing Team', role: 'Health & nutrition', description: 'Monitoring health needs, nourishment, and comfort to support better daily wellbeing.', image: '' },
   ],
 };
 
@@ -319,14 +321,14 @@ export default function AdminDashboard() {
 
         <section className="mt-8 rounded-[1.5rem] border border-[#edf0ed] p-5">
           <h2 className="text-xl font-semibold text-[#163d32]">Gallery</h2>
-          <p className="mt-2 text-sm text-[#5b615d]">Add HTTPS image URLs from images.unsplash.com. Direct file uploads are not configured.</p>
+          <p className="mt-2 text-sm text-[#5b615d]">Use an approved HTTPS image URL from Pexels or Unsplash, or a local stock-image path. Direct uploads are not configured. Replace stock photography with organization-approved images only when authorized.</p>
           <div className="mt-4 space-y-4">
             {site.gallery?.map((item, index) => (
               <div key={item.id || index} className="rounded-2xl border border-[#edf0ed] bg-white p-4">
                 <div className="grid gap-3 md:grid-cols-2">
                   <input value={item.title || ''} onChange={(event) => updateCollection('gallery', index, 'title', event.target.value)} className="rounded-xl border border-[#dfe7e2] px-3 py-2" placeholder="Image title" aria-label={`Gallery image ${index + 1} title`} />
                   <input value={item.id || ''} onChange={(event) => updateCollection('gallery', index, 'id', event.target.value)} className="rounded-xl border border-[#dfe7e2] px-3 py-2" placeholder="Unique ID" aria-label={`Gallery image ${index + 1} identifier`} />
-                  <input type="url" value={item.image || ''} onChange={(event) => updateCollection('gallery', index, 'image', event.target.value)} className="rounded-xl border border-[#dfe7e2] px-3 py-2 md:col-span-2" placeholder="https://images.unsplash.com/..." aria-label={`Gallery image ${index + 1} URL`} />
+                  <input type="text" value={item.image || ''} onChange={(event) => updateCollection('gallery', index, 'image', event.target.value)} className="rounded-xl border border-[#dfe7e2] px-3 py-2 md:col-span-2" placeholder="https://images.pexels.com/..." aria-label={`Gallery image ${index + 1} URL`} />
                 </div>
                 <textarea value={item.description || ''} onChange={(event) => updateCollection('gallery', index, 'description', event.target.value)} rows={2} className="mt-3 w-full rounded-xl border border-[#dfe7e2] px-3 py-2" placeholder="Image description" aria-label={`Gallery image ${index + 1} description`} />
                 <button type="button" onClick={() => removeCollectionItem('gallery', index)} className="mt-3 text-sm font-medium text-red-700 hover:underline">Remove image</button>
@@ -345,7 +347,7 @@ export default function AdminDashboard() {
                 <div className="grid gap-3 md:grid-cols-2">
                   <input value={person.name || ''} onChange={(event) => updateCollection('team', index, 'name', event.target.value)} className="rounded-xl border border-[#dfe7e2] px-3 py-2" placeholder="Name or team" aria-label={`Team member ${index + 1} name`} />
                   <input value={person.role || ''} onChange={(event) => updateCollection('team', index, 'role', event.target.value)} className="rounded-xl border border-[#dfe7e2] px-3 py-2" placeholder="Role" aria-label={`Team member ${index + 1} role`} />
-                  <input type="url" value={person.image || ''} onChange={(event) => updateCollection('team', index, 'image', event.target.value)} className="rounded-xl border border-[#dfe7e2] px-3 py-2 md:col-span-2" placeholder="https://images.unsplash.com/..." aria-label={`Team member ${index + 1} image URL`} />
+                  <input type="text" value={person.image || ''} onChange={(event) => updateCollection('team', index, 'image', event.target.value)} className="rounded-xl border border-[#dfe7e2] px-3 py-2 md:col-span-2" placeholder="https://images.pexels.com/..." aria-label={`Team member ${index + 1} image URL`} />
                 </div>
                 <textarea value={person.description || ''} onChange={(event) => updateCollection('team', index, 'description', event.target.value)} rows={2} className="mt-3 w-full rounded-xl border border-[#dfe7e2] px-3 py-2" placeholder="Description" aria-label={`Team member ${index + 1} description`} />
                 <button type="button" onClick={() => removeCollectionItem('team', index)} className="mt-3 text-sm font-medium text-red-700 hover:underline">Remove team entry</button>

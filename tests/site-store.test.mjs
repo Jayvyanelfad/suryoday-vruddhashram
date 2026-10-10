@@ -1,13 +1,16 @@
 import test, { after } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtemp, rm } from 'node:fs/promises';
+import { mkdtemp, readFile, rm } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import {
   defaultSiteContent,
+  normalizeSiteContent,
   readSiteContent,
   writeSiteContent,
 } from '../src/lib/site-store.js';
+import { legacyImageIds, stockCredits } from '../src/lib/stock-photography.js';
 
 const temporaryDirectory = await mkdtemp(path.join(os.tmpdir(), 'suryoday-content-test-'));
 const previousPath = process.env.SITE_CONTENT_PATH;
@@ -52,4 +55,28 @@ test('site content rejects malformed fields and unsafe image URLs', async () => 
 
   const persisted = await readSiteContent();
   assert.equal(persisted.brand.name, current.brand.name);
+});
+
+test('legacy western image URLs migrate to approved local stock assets without assigning staff portraits', () => {
+  const legacyContent = structuredClone(defaultSiteContent);
+  legacyContent.gallery[0].image =
+    'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=900&q=80';
+  legacyContent.team[0].image =
+    'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=900&q=80';
+
+  const migrated = normalizeSiteContent(legacyContent);
+  assert.equal(
+    migrated.gallery[0].image,
+    legacyImageIds.gallery['1517841905240-472988babdf9']
+  );
+  assert.equal(migrated.team[0].image, '');
+});
+
+test('all credited stock images are present as non-empty local assets', async () => {
+  for (const credit of stockCredits) {
+    const assetPath = fileURLToPath(new URL(`../public${credit.path}`, import.meta.url));
+    const image = await readFile(assetPath);
+    assert.ok(image.length > 10_000, `${credit.path} should be a downloaded image`);
+    assert.deepEqual([...image.subarray(0, 2)], [0xff, 0xd8]);
+  }
 });

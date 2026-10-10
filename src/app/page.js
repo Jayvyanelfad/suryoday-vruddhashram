@@ -2,19 +2,22 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
-import { ArrowRight, Check, ChevronRight, CircleHelp, Heart, Mail, MapPin, Menu, ShieldCheck, Share2, Sparkles, Users, X } from 'lucide-react';
+import { ArrowRight, Check, ChevronRight, CircleHelp, Heart, Mail, MapPin, Menu, Share2, Sparkles, Users, X } from 'lucide-react';
 import LanguageSwitcher from '@/components/charity/LanguageSwitcher';
 import { getSavedLanguage, saveLanguage } from '@/lib/language-preference';
+import { stockImages } from '@/lib/stock-photography';
 
 const translations = {
   en: {
-    nav: { about: 'About', care: 'Care', needs: 'Needs', gallery: 'Gallery', contact: 'Contact' },
+    stockNote: 'Representative stock photography — pictured people are not Suryoday residents or staff.',
+    nav: { about: 'About', care: 'Care', needs: 'Needs', gallery: 'Gallery', contact: 'Contact', support: 'Support' },
+    quickAction: { eyebrow: 'A personal conversation', title: 'Support the mission', body: 'Ask the team about current needs, volunteering, or arranging a visit.', volunteer: 'Volunteer', share: 'Share' },
     hero: {
-      eyebrow: 'Dignity and care for every senior year',
-      title: 'A calmer, kinder place to grow older with dignity.',
-      description: 'Suryoday Vruddhashram offers compassionate elder care, daily support, and a warm community where every resident feels respected, safe, and at home.',
+      eyebrow: 'Elder care rooted in dignity · Pune, India',
+      title: 'Every season of life deserves to feel like belonging.',
+      description: 'A warm community, thoughtful everyday support, and the reassurance of being treated with dignity.',
       primary: 'Support our work',
-      secondary: 'Explore care services',
+      secondary: 'Discover our story',
     },
     about: {
       title: 'A safe, heartfelt home for older adults',
@@ -47,6 +50,11 @@ const translations = {
       donate: 'Donate',
       volunteer: 'Volunteer',
       share: 'Share',
+      descriptions: [
+        'Ask the organization directly about its current, verified needs and ways to contribute.',
+        'Start a conversation with the team about visiting or volunteering.',
+        'Share the mission with your family and community.',
+      ],
     },
     team: {
       title: 'Guiding care with compassion',
@@ -74,38 +82,48 @@ const translations = {
     footer: 'Suryoday Vruddhashram · Care rooted in dignity and community.',
   },
   hi: {
-    nav: { about: 'हमारे बारे में', care: 'देखभाल', needs: 'ज़रूरतें', gallery: 'गैलरी', contact: 'संपर्क' },
+    stockNote: 'प्रतिनिधि स्टॉक फ़ोटोग्राफ़ी — चित्रित लोग सूर्योदय के निवासी या कर्मचारी नहीं हैं।',
+    nav: { about: 'हमारे बारे में', care: 'देखभाल', needs: 'ज़रूरतें', gallery: 'गैलरी', contact: 'संपर्क', support: 'सहयोग करें' },
+    quickAction: { eyebrow: 'सीधी बातचीत', title: 'इस उद्देश्य का साथ दें', body: 'वर्तमान ज़रूरतों, स्वयंसेवा या मुलाक़ात के लिए टीम से पूछें।', volunteer: 'स्वयंसेवा', share: 'साझा करें' },
     hero: {
-      eyebrow: 'हर वरिष्ठ वर्ष के लिए गरिमा और देखभाल',
-      title: 'शांत, दयालु और सम्मानपूर्ण जीवन का स्थान।',
-      description: 'सूर्योदय वृद्धाश्रम वरिष्ठ नागरिकों को स्नेहपूर्ण देखभाल, दैनिक सहयोग और एक गरिमामय समुदाय देता है जहाँ हर निवासी सुरक्षित, सम्मानित और घर जैसा महसूस करता है।',
+      eyebrow: 'गरिमा से जुड़ी वृद्ध देखभाल · पुणे, भारत',
+      title: 'जीवन के हर पड़ाव में अपनापन होना चाहिए।',
+      description: 'एक स्नेही समुदाय, रोज़मर्रा का विचारपूर्ण सहयोग और सम्मान के साथ जीने का भरोसा।',
       primary: 'हमारा सहयोग करें',
-      secondary: 'सेवाओं की जानकारी देखें',
+      secondary: 'हमारी कहानी जानें',
     },
     about: { title: 'बुजुर्गों के लिए सुरक्षित, स्नेही घर', text: 'करुणा और समुदाय के मूल्यों पर आधारित सूर्योदय वृद्धाश्रम वरिष्ठ नागरिकों को आराम, दिनचर्या और अपनापन देता है। हमारी टीम हर निवासी को दैनिक कल्याण, साथ और सम्मानजनक देखभाल प्रदान करती है।', mission: 'बुजुर्गों को सम्मानपूर्ण देखभाल, सुरक्षा, पोषण और ऐसा स्नेही समुदाय देना जहाँ वे गरिमा के साथ रह सकें।' },
     care: { title: 'यहाँ देखभाल कैसी होती है', items: ['दैनिक व्यक्तिगत देखभाल, सहानुभूति और सम्मान के साथ', 'पौष्टिक भोजन, जलयोजन और दवा सहायता', 'नियमित स्वास्थ्य जाँच और शांत वातावरण', 'सामाजिक जुड़ाव, गतिविधियाँ और साथ'] },
     needs: { title: 'वर्तमान प्राथमिकताएँ', subtitle: 'इन आवश्यकताओं से हम निवासियों के लिए आरामदायक और स्थिर दिनचर्या बनाते हैं।' },
     impact: { title: 'सहयोग जो आराम और स्थिरता देता है', stats: [{ value: 'देखभाल', label: 'व्यक्तिगत देखभाल और सहयोग' }, { value: 'भोजन', label: 'पोषण' }, { value: 'समुदाय', label: 'साथ और जुड़ाव' }] },
-    help: { title: 'मदद करने के तरीके', donate: 'दान करें', volunteer: 'स्वयंसेवक', share: 'साझा करें' },
+    help: {
+      title: 'मदद करने के तरीके',
+      donate: 'दान करें',
+      volunteer: 'स्वयंसेवक',
+      share: 'साझा करें',
+      descriptions: ['वर्तमान, सत्यापित ज़रूरतों और योगदान के तरीकों के बारे में संस्था से सीधे पूछें।', 'मुलाक़ात या स्वयंसेवा के बारे में टीम से बात करें।', 'अपने परिवार और समुदाय के साथ यह उद्देश्य साझा करें।'],
+    },
     team: { title: 'करुणा से चलती सेवा', items: [{ name: 'संस्था का नेतृत्व', role: 'देखभाल समन्वय', description: 'निवासियों की सहायता और सामुदायिक सहयोग का समन्वय करता है।' }, { name: 'देखभाल टीम', role: 'निवासी सहयोग', description: 'दैनिक सहायता, सुरक्षा और सम्मानपूर्ण व्यक्तिगत देखभाल प्रदान करती है।' }, { name: 'कल्याण टीम', role: 'स्वास्थ्य एवं पोषण', description: 'हर निवासी के लिए दिनचर्या, पोषण और स्वास्थ्य का समर्थन करती है।' }] },
     faq: { title: 'अक्सर पूछे जाने वाले प्रश्न', items: [{ q: 'सूर्योदय वृद्धाश्रम किसे सहयोग देता है?', a: 'यह उन बुजुर्गों को संभालता है जिन्हें परिवार की तरह सहारा, दैनिक देखभाल और सुरक्षित, सम्मानपूर्ण जीवन की ज़रूरत होती है।' }, { q: 'क्या मैं मिल सकता हूँ या बातचीत कर सकता हूँ?', a: 'हाँ, नीचे दिए गए संपर्क विवरण से बात कर सकते हैं या मुलाक़ात की व्यवस्था कर सकते हैं।' }, { q: 'मैं कैसे सहायता कर सकता हूँ?', a: 'आप दान, स्वयंसेवा या अपने परिवार/दोस्तों के साथ जानकारी साझा करके मदद कर सकते हैं।' }] },
     contact: { title: 'संपर्क करें', email: 'ईमेल', phone: 'कॉल', address: 'मिलें', whatsapp: 'व्हाट्सऐप' },
     footer: 'सूर्योदय वृद्धाश्रम · गरिमा और समुदाय से जुड़ी देखभाल।',
   },
   mr: {
-    nav: { about: 'आमच्याबद्दल', care: 'सेवा', needs: 'गरज', gallery: 'गॅलरी', contact: 'संपर्क' },
+    stockNote: 'प्रतिनिधिक स्टॉक छायाचित्रे — चित्रातील व्यक्ती सूर्योदयचे रहिवासी किंवा कर्मचारी नाहीत.',
+    nav: { about: 'आमच्याबद्दल', care: 'सेवा', needs: 'गरज', gallery: 'गॅलरी', contact: 'संपर्क', support: 'पाठिंबा द्या' },
+    quickAction: { eyebrow: 'थेट संवाद', title: 'या कार्याला साथ द्या', body: 'सध्याच्या गरजा, स्वयंसेवा किंवा भेटीबद्दल टीमला विचारा.', volunteer: 'स्वयंसेवा', share: 'शेअर करा' },
     hero: {
-      eyebrow: 'प्रत्येक ज्येष्ठ वर्षासाठी सन्मान आणि सेवा',
-      title: 'शांत, दयाळू आणि सन्मानपूर्ण जीवनाची जागा.',
-      description: 'सूर्योदय वृद्धाश्रम ज्येष्ठ नागरिकांना दयाळू सेवा, दैनिक आधारभूत सहकार्य आणि एक सन्माननीय समुदाय देतो, जिथे प्रत्येक रहिवासी सुरक्षित, सन्मानित आणि घरासारखा वाटतो.',
+      eyebrow: 'सन्मानपूर्वक वृद्धसेवा · पुणे, भारत',
+      title: 'आयुष्याच्या प्रत्येक टप्प्यावर आपलेपणा हवा.',
+      description: 'जिव्हाळ्याचा समुदाय, रोजच्या जीवनात विचारपूर्वक मदत आणि सन्मानाने जगण्याचा विश्वास.',
       primary: 'आमच्या कामाला पाठिंबा द्या',
-      secondary: 'सेवांची माहिती पहा',
+      secondary: 'आमची गोष्ट जाणून घ्या',
     },
     about: { title: 'वृद्धांसाठी सुरक्षित, प्रेमळ घर', text: 'दयाळूपणा आणि समुदायाच्या मूल्यांवर आधारित सूर्योदय वृद्धाश्रम ज्येष्ठ नागरिकांना आराम, दिनचर्या आणि आपुलकी प्रदान करते. आमची टीम प्रत्येक रहिवाश्याला दैनिक आरोग्य, साथ आणि सन्मानजनक सेवा देते.', mission: 'ज्येष्ठांना सन्मानपूर्वक सेवा, सुरक्षितता, पोषण आणि आपुलकीच्या समुदायाचा आधार देणे, जेणेकरून ते सन्मानाने राहू शकतील.' },
     care: { title: 'येथे सेवा कशी दिसते', items: ['दैनिक वैयक्तिक सेवा, सहानुभूति आणि सन्मानासह', 'पौष्टिक जेवण, पाणी आणि औषध मदत', 'नियमित आरोग्य तपासणी आणि शांत वातावरण', 'सामाजिक जोड, क्रियाकलाप आणि साथ'] },
     needs: { title: 'सध्याची गरज', subtitle: 'या गरजांमुळे आम्ही रहिवाश्यांसाठी आरामदायक आणि स्थिर दिनचर्या तयार करतो.' },
     impact: { title: 'मदत जी आराम आणि स्थिरता देते', stats: [{ value: 'सेवा', label: 'वैयक्तिक सेवा आणि मदत' }, { value: 'जेवण', label: 'पोषण' }, { value: 'समुदाय', label: 'साथ आणि आपलेपणा' }] },
-    help: { title: 'मदत करण्याचे मार्ग', donate: 'दान करा', volunteer: 'स्वयंसेवक', share: 'शेअर करा' },
+    help: { title: 'मदत करण्याचे मार्ग', donate: 'दान करा', volunteer: 'स्वयंसेवक', share: 'शेअर करा', descriptions: ['सध्याच्या, खात्रीशीर गरजा आणि मदतीच्या मार्गांसाठी संस्थेशी थेट संपर्क साधा.', 'भेट किंवा स्वयंसेवेसाठी टीमशी संवाद साधा.', 'आपल्या कुटुंबासोबत आणि समुदायात संस्थेचे ध्येय शेअर करा.'] },
     team: { title: 'दयाळूपणाने चालणारी सेवा', items: [{ name: 'संस्थेचे नेतृत्व', role: 'सेवा समन्वय', description: 'रहिवाशांच्या मदतीचे आणि समुदाय सहकार्याचे समन्वय करते.' }, { name: 'सेवा टीम', role: 'रहिवासी मदत', description: 'दैनिक सहाय्य, सुरक्षा आणि सन्मानजनक वैयक्तिक सेवा देते.' }, { name: 'आरोग्य टीम', role: 'आरोग्य आणि पोषण', description: 'प्रत्येक रहिवाश्यासाठी दिनचर्या, पोषण आणि आरोग्य समर्थन करते.' }] },
     faq: { title: 'वारंवार विचारले जाणारे प्रश्न', items: [{ q: 'सूर्योदय वृद्धाश्रम कोणाला मदत करतो?', a: 'हे अशा ज्येष्ठ नागरिकांना आधार देते ज्यांना साथ, दैनिक सेवा आणि सुरक्षित, सन्मानपूर्ण जीवनाची गरज असते.' }, { q: 'मी भेट देऊ शकतो का?', a: 'होय, खालील संपर्क तपशील वापरून तुम्ही प्रश्न विचारू शकता किंवा भेटीची व्यवस्था करू शकता.' }, { q: 'मी कसे मदत करू शकतो?', a: 'तुम्ही दान, स्वयंसेवा किंवा माहिती सोशल माध्यमांत शेअर करून मदत करू शकता.' }] },
     contact: { title: 'आमच्याशी संपर्क साधा', email: 'ईमेल', phone: 'कॉल', address: 'भेट द्या', whatsapp: 'व्हॉट्सॲप' },
@@ -119,12 +137,6 @@ const needs = [
   { title: { en: 'Companionship and activities', hi: 'साथ और गतिविधियाँ', mr: 'साथ आणि उपक्रम' }, description: { en: 'Meaningful daily engagement, emotional support, and social activity for a happy routine.', hi: 'सुखद दिनचर्या के लिए सार्थक दैनिक जुड़ाव, भावनात्मक सहयोग और सामाजिक गतिविधियाँ।', mr: 'आनंदी दिनक्रमासाठी अर्थपूर्ण दैनंदिन सहभाग, भावनिक आधार आणि सामाजिक उपक्रम.' } },
 ];
 
-const stats = [
-  { id: 'care', value: 'Care', label: { en: 'Personal care and support', hi: 'व्यक्तिगत देखभाल और सहयोग', mr: 'वैयक्तिक सेवा आणि मदत' } },
-  { id: 'meals', value: 'Meals', label: { en: 'Nourishment', hi: 'पोषण', mr: 'पोषण' } },
-  { id: 'community', value: 'Community', label: { en: 'Companionship', hi: 'साथ और जुड़ाव', mr: 'साथ आणि आपलेपणा' } },
-];
-
 const emptyTeam = [
   { id: 't1', name: 'Organization leadership', role: 'Care coordination', description: 'Coordinates resident support and community partnerships.' },
   { id: 't2', name: 'Care Team', role: 'Resident support', description: 'Daily personal care, empathy, and practical support for a safe, dignified routine.' },
@@ -132,10 +144,10 @@ const emptyTeam = [
 ];
 
 const gallery = [
-  { src: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=900&q=80', caption: { en: 'Daily companionship', hi: 'दैनिक साथ', mr: 'दैनंदिन साथ' } },
-  { src: 'https://images.unsplash.com/photo-1544022592-4f1881e4ca34?auto=format&fit=crop&w=900&q=80', caption: { en: 'Wellbeing support', hi: 'कल्याण सहायता', mr: 'आरोग्य मदत' } },
-  { src: 'https://images.unsplash.com/photo-1556911220-bff31c812dba?auto=format&fit=crop&w=900&q=80', caption: { en: 'Nutritious meals', hi: 'पौष्टिक भोजन', mr: 'पौष्टिक जेवण' } },
-  { src: 'https://images.unsplash.com/photo-1519944519054-4d4b1b1dce8a?auto=format&fit=crop&w=900&q=80', caption: { en: 'Shared moments', hi: 'साझे पल', mr: 'सामील क्षण' } },
+  { id: 'g1', src: stockImages.community, caption: { en: 'Older women sharing a moment', hi: 'साथ बितातीं बुज़ुर्ग महिलाएँ', mr: 'एकत्र वेळ घालवणाऱ्या ज्येष्ठ महिला' } },
+  { id: 'g2', src: stockImages.family, caption: { en: 'A grandmother and young family member', hi: 'दादी और परिवार का एक नन्हा सदस्य', mr: 'आजी आणि कुटुंबातील लहान सदस्य' } },
+  { id: 'g3', src: stockImages.dailyLife, caption: { en: 'An older man enjoying time outdoors', hi: 'बाहर समय बिताते एक बुज़ुर्ग', mr: 'बाहेर वेळ घालवणारे ज्येष्ठ गृहस्थ' } },
+  { id: 'g4', src: stockImages.elderWoman, caption: { en: 'An older woman outdoors in India', hi: 'भारत में बाहर बैठी एक बुज़ुर्ग महिला', mr: 'भारतात बाहेर बसलेली एक ज्येष्ठ महिला' } },
 ];
 
 export default function HomePage() {
@@ -214,21 +226,13 @@ export default function HomePage() {
     title: need.title[language],
     description: need.description[language],
   }));
-  const displayStats = siteData?.stats?.map((stat, index) => {
-    const defaultIndex = { care: 0, meals: 1, community: 2 }[stat.id];
-    const defaultStat = stats[defaultIndex];
-    return {
-      ...stat,
-      label: defaultStat && stat.label === defaultStat.label.en ? defaultStat.label[language] : stat.label,
-    };
-  }) || stats.map((stat) => ({ value: stat.value, label: stat.label[language] }));
-  const displayGallery = siteData?.gallery?.map((item, index) => {
-    const defaultImage = gallery[index];
-    return {
-      src: item.image,
-      caption: defaultImage?.caption.en === item.title ? defaultImage.caption[language] : item.title,
-      description: item.description,
-    };
+  const legacyGalleryTitles = ['Daily companionship', 'Wellbeing support', 'Nutritious meals', 'Shared moments'];
+  const displayGallery = siteData?.gallery?.map((item) => {
+    const defaultImage = gallery.find((entry) => entry.id === item.id);
+    const caption = defaultImage && (
+      item.title === defaultImage.caption.en || legacyGalleryTitles[gallery.indexOf(defaultImage)] === item.title
+    ) ? defaultImage.caption[language] : item.title;
+    return { src: item.image, caption, description: item.description };
   }) || gallery.map((item) => ({ src: item.src, caption: item.caption[language] }));
   const displayTeam = siteData?.team?.map((person, index) => {
     const defaultIndex = { t1: 0, t2: 1, t3: 2 }[person.id];
@@ -291,10 +295,10 @@ export default function HomePage() {
   return (
     <main className="min-h-screen bg-[#faf7f0] text-[#282b28]">
       <a className="skip-link" href="#main-content">Skip to content</a>
-      <header className="sticky top-0 z-40 border-b border-[#e6e0d3] bg-[#faf7f0]/90 backdrop-blur-md">
+      <header className="site-header sticky top-0 z-40 border-b border-[#e6e0d3] bg-[#faf7f0]/95 backdrop-blur-md">
         <div className="section-shell flex items-center justify-between gap-2 py-4">
           <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#24745a] to-[#163d32] text-lg text-white shadow-md">☀</div>
+            <div className="brand-mark flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#b89a62]/50 bg-[#173d32] text-lg text-[#faf7f0]">☀</div>
             <div className="hidden min-w-0 min-[220px]:block">
               <div className="truncate text-base font-semibold text-[#163d32] md:text-lg">{organizationName}</div>
               <div className="truncate text-[11px] uppercase tracking-[0.18em] text-[#5b615d]">Tejaswi Foundation</div>
@@ -317,7 +321,7 @@ export default function HomePage() {
             >
               {navOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
-            <a href="#contact" className="primary-button hidden sm:inline-flex">Support</a>
+            <a href="#contact" className="primary-button hidden sm:inline-flex">{content.nav.support}</a>
           </div>
         </div>
         {navOpen && (
@@ -333,218 +337,189 @@ export default function HomePage() {
 
       {siteDataError && (
         <p role="status" className="bg-[#fff4d6] px-4 py-2 text-center text-sm text-[#4f3d13]">
-          We couldn’t refresh the latest site information. Showing the available published details.
+          {language === 'hi' ? 'नई जानकारी लोड नहीं हो सकी। उपलब्ध प्रकाशित जानकारी दिखाई जा रही है।' : language === 'mr' ? 'नवीन माहिती लोड होऊ शकली नाही. उपलब्ध प्रकाशित माहिती दाखवली जात आहे.' : 'We couldn’t refresh the latest site information. Showing the available published details.'}
         </p>
       )}
 
-      <section id="main-content" tabIndex="-1" className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(36,116,90,0.12),transparent_35%),radial-gradient(circle_at_bottom_right,_rgba(200,169,107,0.15),transparent_30%)]" />
-        <div className="section-shell relative grid grid-cols-1 items-center gap-12 py-16 md:grid-cols-[1.1fr_0.9fr] md:py-24">
-          <div>
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#d9e7e2] bg-white/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-[#24745a]">
-              <Sparkles className="h-4 w-4" />
-              {content.hero.eyebrow}
-            </div>
-            <h1 className="max-w-xl text-balance text-4xl font-semibold leading-tight text-[#163d32] md:text-6xl">
+      <section id="main-content" tabIndex="-1" className="hero-section">
+        <div className="section-shell hero-grid">
+          <div className="hero-copy">
+            <p className="eyebrow"><Sparkles aria-hidden="true" className="h-4 w-4" />{content.hero.eyebrow}</p>
+            <h1 className="editorial-title text-balance">
               {content.hero.title}
             </h1>
-            <p className="mt-6 max-w-lg text-lg leading-8 text-[#4f5854]">
+            <p className="hero-description">
               {content.hero.description}
             </p>
-            <div className="mt-8 flex flex-col gap-4 sm:flex-row">
+            <div className="hero-actions">
               <a href="#contact" className="primary-button inline-flex items-center justify-center gap-2">
                 {content.hero.primary}
                 <ArrowRight className="h-4 w-4" />
               </a>
-              <a href="#care" className="secondary-button inline-flex items-center justify-center gap-2">
+              <a href="#about" className="secondary-button inline-flex items-center justify-center gap-2">
                 {content.hero.secondary}
               </a>
             </div>
-            <div className="mt-10 flex flex-wrap items-center gap-6 text-sm text-[#4d5b57]">
-              <div className="flex items-center gap-2"><ShieldCheck className="h-4 w-4 text-[#24745a]" /> Respectful care</div>
-              <div className="flex items-center gap-2"><Heart className="h-4 w-4 text-[#24745a]" /> Compassion-first</div>
-            </div>
+            <p className="hero-signature">{organizationName}<span aria-hidden="true"> · </span>{contactAddress.split(',').slice(-2).join(',').trim()}</p>
           </div>
 
-          <div className="panel-surface relative overflow-hidden rounded-[2rem] p-3 shadow-[0_20px_50px_rgba(22,61,50,0.1)]">
-            <div className="relative aspect-[4/5] overflow-hidden rounded-[1.5rem]">
+          <figure className="hero-photo">
+            <div className="hero-photo-frame">
               <Image
-                src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=1200&q=80"
-                alt="Representative stock photograph"
+                src={stockImages.hero}
+                alt={language === 'hi' ? 'भारतीय बुज़ुर्ग दंपति का प्रतिनिधि स्टॉक फ़ोटो; वे सूर्योदय के निवासी नहीं हैं।' : language === 'mr' ? 'भारतीय ज्येष्ठ जोडप्याचे प्रतिनिधिक स्टॉक छायाचित्र; ते सूर्योदयचे रहिवासी नाहीत.' : 'Representative stock photograph of an Indian older couple sharing a quiet moment outdoors; they are not Suryoday residents.'}
                 fill
+                sizes="(max-width: 768px) 100vw, 54vw"
                 className="object-cover"
                 priority
               />
             </div>
-            <div className="absolute inset-x-8 bottom-8 rounded-2xl border border-white/30 bg-[#163d32]/80 p-5 text-white shadow-xl backdrop-blur-sm">
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="text-xs uppercase tracking-[0.18em] text-[#d9e7e2]">Community care</div>
-                  <div className="mt-2 text-2xl font-semibold">Daily comfort</div>
-                </div>
-                <div className="rounded-full bg-[#c8a96b] p-2 text-[#163d32]">
-                  <Heart className="h-5 w-5" fill="currentColor" />
-                </div>
-              </div>
+            <figcaption><span>{content.stockNote}</span><a href="https://www.pexels.com/photo/portrait-of-elderly-couple-in-traditional-clothing-19811308/" target="_blank" rel="noreferrer">Photo: Ekam Juneja / Pexels</a></figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section id="about" className="editorial-section">
+        <div className="section-shell about-grid">
+          <figure className="about-photo">
+            <div className="about-photo-frame">
+              <Image src={stockImages.family} alt={language === 'hi' ? 'भारतीय दादी और परिवार के एक नन्हे सदस्य का प्रतिनिधि स्टॉक फ़ोटो; वे सूर्योदय के निवासी नहीं हैं।' : language === 'mr' ? 'भारतीय आजी आणि कुटुंबातील लहान सदस्याचे प्रतिनिधिक स्टॉक छायाचित्र; त्या सूर्योदयच्या रहिवासी नाहीत.' : 'Representative stock photograph of an Indian grandmother with a young family member; not a Suryoday resident.'} fill sizes="(max-width: 768px) 100vw, 48vw" className="object-cover" />
             </div>
+            <figcaption>{content.stockNote} <a href="https://www.pexels.com/photo/joyful-moment-between-grandmother-and-child-33786766/" target="_blank" rel="noreferrer">Photo: Rakibul alam khan / Pexels</a></figcaption>
+          </figure>
+
+          <div className="about-copy">
+            <p className="section-kicker">{content.nav.about}</p>
+            <h2 className="section-title">{content.about.title}</h2>
+            <p className="section-lede">{aboutText}</p>
+            <blockquote className="mission-quote">
+              <span>{language === 'hi' ? 'हमारा दृष्टिकोण' : language === 'mr' ? 'आमचा दृष्टिकोन' : 'Our approach'}</span>
+              <p>{missionText}</p>
+            </blockquote>
           </div>
         </div>
       </section>
 
-      <section id="about" className="py-20 md:py-28">
-        <div className="section-shell grid grid-cols-1 gap-10 md:grid-cols-[0.95fr_1.05fr] md:items-center">
-          <div className="relative overflow-hidden rounded-[2rem] bg-[#163d32] p-4 shadow-[0_20px_50px_rgba(22,61,50,0.15)]">
-            <div className="relative aspect-[4/5] overflow-hidden rounded-[1.5rem]">
-              <Image src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=1200&q=80" alt="Representative stock photograph" fill className="object-cover" />
-            </div>
-          </div>
-
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#24745a]">{content.nav.about}</p>
-            <h2 className="mt-4 text-3xl font-semibold text-[#163d32] md:text-5xl">{content.about.title}</h2>
-            <p className="mt-6 text-lg leading-8 text-[#4f5854]">{aboutText}</p>
-            <div className="mt-8 rounded-[1.5rem] border border-[#dfe7e2] bg-[#f9f5ee] p-6 text-[#163d32]">
-              <div className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[#24745a]">Our approach</div>
-              <p className="text-lg leading-8">{missionText}</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="care" className="bg-[#f3efe7] py-20 md:py-28">
+      <section id="care" className="care-section">
         <div className="section-shell">
-          <div className="mx-auto max-w-3xl text-center">
-            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#24745a]">{content.nav.care}</p>
-            <h2 className="mt-4 text-3xl font-semibold text-[#163d32] md:text-5xl">{content.care.title}</h2>
+          <div className="section-heading-row">
+            <div><p className="section-kicker">{content.nav.care}</p><h2 className="section-title">{content.care.title}</h2></div>
+            <p className="section-aside">{siteData?.organization?.tagline || content.about.mission}</p>
           </div>
-          <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
+          <div className="care-list">
             {content.care.items.map((item, index) => (
-              <div key={item} className="panel-surface rounded-[1.75rem] p-6">
-                <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#eaf4f0] text-[#24745a]">
-                  <Check className="h-5 w-5" />
-                </div>
-                <div className="text-sm font-semibold uppercase tracking-[0.14em] text-[#24745a]">0{index + 1}</div>
-                <p className="mt-4 text-lg leading-8 text-[#2b312d]">{item}</p>
-              </div>
+              <article key={item} className="care-item">
+                <span className="care-index">0{index + 1}</span>
+                <p>{item}</p>
+                <Check aria-hidden="true" className="care-check" />
+              </article>
             ))}
           </div>
         </div>
       </section>
 
-      <section id="needs" className="py-20 md:py-28">
+      <section id="needs" className="needs-section">
         <div className="section-shell">
-          <div className="mx-auto max-w-3xl text-center">
-            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#24745a]">{content.nav.needs}</p>
-            <h2 className="mt-4 text-3xl font-semibold text-[#163d32] md:text-5xl">{content.needs.title}</h2>
-            <p className="mt-4 text-lg leading-8 text-[#4f5854]">{content.needs.subtitle}</p>
+          <div className="needs-heading">
+            <div><p className="section-kicker">{content.nav.needs}</p><h2 className="section-title">{content.needs.title}</h2></div>
+            <p>{content.needs.subtitle}</p>
           </div>
-          <div className="mt-12 grid grid-cols-1 gap-6 lg:grid-cols-3">
-            {displayNeeds.map((need, index) => (
-              <div key={need.id || need.title} className="rounded-[1.75rem] border border-[#dde7e1] bg-white p-7 shadow-sm">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#f4ead6] text-[#c8a96b]">
-                  {index === 0 ? '🥗' : index === 1 ? '🩺' : '🤝'}
-                </div>
-                <h3 className="text-2xl font-semibold text-[#163d32]">{need.title}</h3>
-                <p className="mt-4 text-base leading-7 text-[#4f5854]">{need.description}</p>
-              </div>
-            ))}
+          <div className="needs-layout">
+            <div className="needs-list">
+              {displayNeeds.map((need, index) => (
+                <article key={need.id || need.title} className="need-row">
+                  <span className="need-number">0{index + 1}</span>
+                  <div><span className="need-status">{language === 'hi' ? 'प्रकाशित आवश्यकता' : language === 'mr' ? 'प्रकाशित गरज' : 'Published need'}</span><h3>{need.title}</h3><p>{need.description}</p></div>
+                  <ChevronRight aria-hidden="true" />
+                </article>
+              ))}
+            </div>
+            <figure className="needs-photo">
+              <Image src={stockImages.dailyLife} alt={language === 'hi' ? 'बाहर बैठे एक बुज़ुर्ग भारतीय पुरुष का प्रतिनिधि स्टॉक फ़ोटो; वे सूर्योदय के निवासी नहीं हैं।' : language === 'mr' ? 'बाहेर बसलेल्या ज्येष्ठ भारतीय गृहस्थाचे प्रतिनिधिक स्टॉक छायाचित्र; ते सूर्योदयचे रहिवासी नाहीत.' : 'Representative stock photograph of an older Indian man outdoors; not a Suryoday resident.'} fill sizes="(max-width: 900px) 100vw, 38vw" className="object-cover" />
+              <figcaption>{content.stockNote} <a href="https://www.pexels.com/photo/serene-outdoor-lunchtime-for-elderly-man-in-park-28589341/" target="_blank" rel="noreferrer">Photo: Nishant Aneja / Pexels</a></figcaption>
+            </figure>
           </div>
         </div>
       </section>
 
-      <section className="bg-[#163d32] py-20 text-white md:py-28">
-        <div className="section-shell">
-          <div className="mx-auto max-w-3xl text-center">
-            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#d9e7e2]">{content.impact.title}</p>
-            <h2 className="mt-4 text-3xl font-semibold md:text-5xl">{content.impact.title}</h2>
-          </div>
-          <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3">
-            {displayStats.map((item) => (
-              <div key={item.id || item.label} className="rounded-[1.75rem] border border-white/10 bg-white/5 p-8 text-center">
-                <div className="text-4xl font-semibold text-[#f1ebdd]">{item.value}</div>
-                <div className="mt-3 text-lg text-[#dfe7e2]">{item.label}</div>
-              </div>
-            ))}
-          </div>
+      <section className="impact-section" aria-labelledby="impact-title">
+        <div className="section-shell impact-inner">
+          <p className="section-kicker">{language === 'hi' ? 'सार्थक सहयोग' : language === 'mr' ? 'अर्थपूर्ण साथ' : 'A more human measure'}</p>
+          <h2 id="impact-title" className="impact-title">{content.impact.title}</h2>
+          <p>{missionText}</p>
+          <a href="#contact" className="impact-link">{content.hero.primary}<ArrowRight aria-hidden="true" /></a>
         </div>
       </section>
 
-      <section id="help" className="py-20 md:py-28">
+      <section id="help" className="help-section">
         <div className="section-shell">
-          <div className="mx-auto max-w-3xl text-center">
-            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#24745a]">{content.help.title}</p>
-            <h2 className="mt-4 text-3xl font-semibold text-[#163d32] md:text-5xl">{content.help.title}</h2>
+          <div className="section-heading-row">
+            <div><p className="section-kicker">{language === 'hi' ? 'सहभागी बनें' : language === 'mr' ? 'सहभागी व्हा' : 'Be part of it'}</p><h2 className="section-title">{content.help.title}</h2></div>
+            <p className="section-aside">{language === 'hi' ? 'हर मदद की शुरुआत एक बातचीत से होती है।' : language === 'mr' ? 'प्रत्येक मदतीची सुरुवात संवादातून होते.' : 'Every act of support begins with a conversation.'}</p>
           </div>
-          <div className="mt-12 grid grid-cols-1 gap-6 lg:grid-cols-3">
-            {[{ icon: Heart, label: content.help.donate, text: 'Ask the organization directly for current, verified ways to contribute.' }, { icon: Users, label: content.help.volunteer, text: 'Contact the team to ask about visiting or volunteering.' }, { icon: Share2, label: content.help.share, text: 'Share the mission with community networks and help plant a wider circle of support.' }].map((card) => (
-              <div key={card.label} className="panel-surface rounded-[1.75rem] p-7">
-                <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#ebf4f1] text-[#24745a]">
-                  <card.icon className="h-5 w-5" />
-                </div>
-                <h3 className="text-2xl font-semibold text-[#163d32]">{card.label}</h3>
-                <p className="mt-4 text-base leading-7 text-[#4f5854]">{card.text}</p>
+          <div className="help-grid">
+            {[{ icon: Heart, label: content.help.donate, text: content.help.descriptions[0] }, { icon: Users, label: content.help.volunteer, text: content.help.descriptions[1] }, { icon: Share2, label: content.help.share, text: content.help.descriptions[2] }].map((card, index) => (
+              <article key={card.label} className="help-item">
+                <div className="help-item-top"><span>0{index + 1}</span><card.icon aria-hidden="true" /></div>
+                <h3>{card.label}</h3>
+                <p>{card.text}</p>
                 {card.label === content.help.share ? (
-                  <button type="button" onClick={handleShare} className="mt-8 inline-flex items-center gap-2 rounded-full bg-[#163d32] px-5 py-3 font-medium text-white">
+                  <button type="button" onClick={handleShare} className="help-action">
                     {card.label}<ChevronRight className="h-4 w-4" />
                   </button>
                 ) : (
                   <a
                     href={`mailto:${contactEmail}?subject=${encodeURIComponent(card.label === content.help.donate ? 'Ways to contribute' : 'Volunteer inquiry')}`}
-                    className="mt-8 inline-flex items-center gap-2 rounded-full bg-[#163d32] px-5 py-3 font-medium text-white"
+                    className="help-action"
                   >
                     {card.label}<ChevronRight className="h-4 w-4" />
                   </a>
                 )}
-              </div>
+              </article>
             ))}
           </div>
         </div>
       </section>
 
-      <section id="team" className="py-20 md:py-28">
+      <section id="team" className="team-section">
         <div className="section-shell">
-          <div className="mx-auto max-w-3xl text-center">
-            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#24745a]">People</p>
-            <h2 className="mt-4 text-3xl font-semibold text-[#163d32] md:text-5xl">{content.team.title}</h2>
+          <div className="team-heading"><p className="section-kicker">{language === 'hi' ? 'देखभाल का आधार' : language === 'mr' ? 'सेवेचा आधार' : 'The people behind care'}</p><h2 className="section-title">{content.team.title}</h2>
           </div>
-          <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3">
-            {displayTeam.map((person) => (
-              <div key={person.name} className="overflow-hidden rounded-[1.75rem] bg-white shadow-sm ring-1 ring-[#edf0ed]">
-                <div className="relative h-72">
-                  <Image
-                    src={person.image || 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=900&q=80'}
-                    alt={`Representative stock photograph for ${person.role}`}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                <div className="p-6">
-                  <div className="text-xs font-semibold uppercase tracking-[0.14em] text-[#24745a]">{person.role}</div>
-                  <h3 className="mt-3 text-2xl font-semibold text-[#163d32]">{person.name}</h3>
-                  <p className="mt-4 text-base leading-7 text-[#4f5854]">{person.description}</p>
-                </div>
-              </div>
+          <div className="team-grid">
+            {displayTeam.map((person, index) => (
+              <article key={person.name} className="team-item">
+                <span className="team-number">0{index + 1}</span>
+                <p className="team-role">{person.role}</p>
+                <h3>{person.name}</h3>
+                <p className="team-description">{person.description}</p>
+              </article>
             ))}
           </div>
         </div>
       </section>
 
-      <section id="gallery" className="bg-[#f3efe7] py-20 md:py-28">
+      <section id="gallery" className="gallery-section">
         <div className="section-shell">
-          <div className="mx-auto max-w-3xl text-center">
-            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#24745a]">Gallery</p>
-            <h2 className="mt-4 text-3xl font-semibold text-[#163d32] md:text-5xl">Moments of care</h2>
+          <div className="section-heading-row">
+            <div><p className="section-kicker">{content.nav.gallery}</p><h2 className="section-title">{language === 'hi' ? 'जीवन के साझा पल' : language === 'mr' ? 'आयुष्यातील सामायिक क्षण' : 'Life, shared together'}</h2></div>
+            <p className="section-aside">{content.stockNote}</p>
           </div>
-          <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
-            {displayGallery.map((image) => (
-              <button type="button" key={image.src} onClick={() => setSelectedImage(image)} className="group relative h-72 overflow-hidden rounded-[1.5rem] text-left shadow-sm ring-1 ring-[#e7e2d8]">
-                <Image src={image.src} alt={image.caption[language]} fill className="object-cover transition duration-300 group-hover:scale-105" />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#163d32]/80 via-[#163d32]/10 to-transparent" />
-                <div className="absolute inset-x-0 bottom-0 p-5 text-white">
-                  <div className="text-lg font-semibold">{image.caption[language]}</div>
-                </div>
+          <div className="gallery-grid">
+            {displayGallery.map((image, index) => (
+              <button type="button" key={image.src} onClick={() => setSelectedImage(image)} className={`gallery-tile gallery-tile-${index + 1}`} aria-label={`${image.caption}. ${content.stockNote}`}>
+                <Image src={image.src} alt={`${image.caption}. ${content.stockNote}`} fill sizes="(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 34vw" className="gallery-image" onError={(event) => { event.currentTarget.src = stockImages.community; }} />
+                <span className="gallery-caption">{image.caption}<small>{language === 'hi' ? 'प्रतिनिधि स्टॉक फ़ोटो' : language === 'mr' ? 'प्रतिनिधिक स्टॉक फोटो' : 'Representative stock photo'}</small></span>
               </button>
             ))}
+          </div>
+          <div className="gallery-credits">
+            {[
+              ['Ekam Juneja', 'https://www.pexels.com/photo/portrait-of-elderly-couple-in-traditional-clothing-19811308/'],
+              ['Rakibul alam khan', 'https://www.pexels.com/photo/joyful-moment-between-grandmother-and-child-33786766/'],
+              ['Puneet Singh Rawat', 'https://www.pexels.com/photo/elderly-women-in-traditional-clothing-18597902/'],
+              ['Nishant Aneja', 'https://www.pexels.com/photo/serene-outdoor-lunchtime-for-elderly-man-in-park-28589341/'],
+              ['Varinder Kumar Kumar', 'https://www.pexels.com/photo/elderly-woman-sitting-outdoors-in-nakodar-india-32224339/'],
+            ].map(([photographer, source]) => <a href={source} key={photographer} target="_blank" rel="noreferrer">{photographer} / Pexels</a>)}
           </div>
         </div>
       </section>
@@ -635,8 +610,8 @@ export default function HomePage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#163d32]/75 p-4" onClick={() => setSelectedImage(null)}>
           <div ref={dialogRef} role="dialog" aria-modal="true" aria-label={selectedImage.caption} className="relative w-full max-w-3xl overflow-hidden rounded-[1.75rem] bg-white shadow-2xl" onClick={(event) => event.stopPropagation()}>
             <button ref={closeButtonRef} type="button" aria-label="Close image" onClick={() => setSelectedImage(null)} className="absolute right-4 top-4 z-10 rounded-full bg-white/90 p-2 text-[#163d32]">✕</button>
-            <div className="relative aspect-[4/3] w-full">
-              <Image src={selectedImage.src} alt={selectedImage.caption} fill className="object-cover" />
+            <div className="relative aspect-[4/3] w-full bg-[#e4ebdd]">
+              <Image src={selectedImage.src} alt={`${selectedImage.caption}. ${content.stockNote}`} fill sizes="(max-width: 768px) 100vw, 768px" className="object-cover" onError={(event) => { event.currentTarget.src = stockImages.community; }} />
             </div>
             <div className="p-6">
               <div className="text-2xl font-semibold text-[#163d32]">{selectedImage.caption}</div>

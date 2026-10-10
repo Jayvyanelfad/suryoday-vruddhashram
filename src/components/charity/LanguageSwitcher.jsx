@@ -1,11 +1,10 @@
 'use client';
 import { useEffect, useMemo, useState } from 'react';
-import { Globe } from 'lucide-react';
 
 const languages = [
-  { code: 'en', name: 'English', flag: '🇬🇧' },
-  { code: 'hi', name: 'हिंदी', flag: '🇮🇳' },
-  { code: 'mr', name: 'मराठी', flag: '🇮🇳' },
+  { code: 'en', name: 'English', short: 'EN' },
+  { code: 'hi', name: 'Hindi', short: 'हिं' },
+  { code: 'mr', name: 'Marathi', short: 'मर' },
 ];
 
 export default function LanguageSwitcher({ currentLanguage, onLanguageChange }) {
@@ -43,19 +42,18 @@ export default function LanguageSwitcher({ currentLanguage, onLanguageChange }) 
       <button
         type="button"
         onClick={() => setOpen((value) => !value)}
-        className="flex items-center gap-2 rounded-full border border-[#d6e5df] bg-white/90 px-3 py-2 text-sm font-medium text-[#163d32] shadow-sm backdrop-blur-sm transition hover:bg-white"
-        aria-label="Select language"
+        className="language-trigger"
+        aria-label={`Language: ${currentLang.name}`}
         aria-expanded={open}
         aria-haspopup="menu"
         aria-controls="language-options"
       >
-        <Globe className="hidden h-4 w-4 min-[400px]:block" />
-        <span className="text-lg">{currentLang.flag}</span>
-        <span className="hidden sm:inline">{currentLang.name}</span>
+        <span aria-hidden="true" className="language-short">{currentLang.short}</span>
+        <span className="language-name">{currentLang.name}</span>
       </button>
 
       {open && (
-        <div id="language-options" role="menu" aria-label="Available languages" onKeyDown={handleMenuKeyDown} className="absolute right-0 top-full z-50 mt-2 w-40 overflow-hidden rounded-2xl border border-[#d6e5df] bg-white shadow-xl">
+        <div id="language-options" role="menu" aria-label="Available languages" onKeyDown={handleMenuKeyDown} className="language-menu absolute right-0 top-full z-50 mt-2 w-40 overflow-hidden">
           {languages.map((language) => (
             <button
               key={language.code}
@@ -66,11 +64,11 @@ export default function LanguageSwitcher({ currentLanguage, onLanguageChange }) 
                 onLanguageChange(language.code);
                 setOpen(false);
               }}
-              className={`flex w-full items-center gap-3 px-4 py-3 text-left text-sm transition ${
-                currentLanguage === language.code ? 'bg-[#edf7f3] text-[#163d32]' : 'text-[#282b28] hover:bg-[#f5f5f0]'
+              className={`language-option flex w-full items-center gap-3 px-4 py-3 text-left text-sm transition ${
+                currentLanguage === language.code ? 'is-selected' : ''
               }`}
             >
-              <span className="text-lg">{language.flag}</span>
+              <span className="language-short">{language.short}</span>
               <span>{language.name}</span>
             </button>
           ))}

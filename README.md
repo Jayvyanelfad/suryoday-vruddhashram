@@ -30,9 +30,23 @@ The local content store defaults to `data/site-content.json`. It is created on f
 
 Open `/admin` and sign in with the configured credentials. Admin changes to organization details, contact information, support priorities, impact cards, and gallery entries are saved to the server-side content store and returned by the public `GET /api/site` endpoint. `PUT /api/site` requires a valid, expiring, HTTP-only session cookie and a same-origin request. The public page refreshes the same content source; browser storage is used only for language preference, not for authentication or published content.
 
-The gallery accepts HTTPS image URLs hosted on `images.unsplash.com`; direct image-file uploads are not implemented. Volunteer and contribution links open an email draft in the visitor's mail application; the site does not accept or store inquiries or process donations. No payment processor, donation account, or inquiry backend is configured.
+The gallery accepts HTTPS image URLs hosted on `images.unsplash.com` or `images.pexels.com`, as well as the bundled `/images/stock/` assets; direct image-file uploads are not implemented. Volunteer and contribution links open an email draft in the visitor's mail application; the site does not accept or store inquiries or process donations. No payment processor, donation account, or inquiry backend is configured.
 
-The bundled photographs are representative Unsplash stock images, not photographs of the organization, residents, or named staff. Replace them with organization-authorized imagery before representing them as real people or places. Confirm the public phone, email, address, services, and any organization-specific statements with Tejaswi Foundation before production launch. Anonymous sample testimonials and unverifiable impact metrics are not displayed.
+### Photography and image credits
+
+The bundled photographs are representative stock images, not photographs of Suryoday Vruddhashram, its residents, its staff, or its activities. They are credited to their photographers and source pages in the homepage gallery. The Pexels source pages identify each asset as a free download; the [Pexels License](https://www.pexels.com/license/) permits use on websites, subject to its restrictions. Do not imply endorsement by pictured people, redistribute the unmodified images as a standalone collection, or present stock subjects as actual residents or staff. Replace them with organization-approved photographs when written permission and participant consent are available.
+
+Bundled image inventory:
+
+| Local asset | Use | Photographer and source |
+| --- | --- | --- |
+| `public/images/stock/indian-senior-couple.jpg` | Hero | Ekam Juneja, [Pexels photo 19811308](https://www.pexels.com/photo/portrait-of-elderly-couple-in-traditional-clothing-19811308/) |
+| `public/images/stock/indian-grandmother-and-child.jpg` | About | Rakibul alam khan, [Pexels photo 33786766](https://www.pexels.com/photo/joyful-moment-between-grandmother-and-child-33786766/) |
+| `public/images/stock/indian-senior-women.jpg` | Gallery/community | Puneet Singh Rawat, [Pexels photo 18597902](https://www.pexels.com/photo/elderly-women-in-traditional-clothing-18597902/) |
+| `public/images/stock/indian-senior-man-outdoors.jpg` | Current-needs editorial image | Nishant Aneja, [Pexels photo 28589341](https://www.pexels.com/photo/serene-outdoor-lunchtime-for-elderly-man-in-park-28589341/) |
+| `public/images/stock/indian-elderly-woman-outdoors.jpg` | Gallery | Varinder Kumar Kumar, [Pexels photo 32224339](https://www.pexels.com/photo/elderly-woman-sitting-outdoors-in-nakodar-india-32224339/) |
+
+Confirm the public phone, email, address, services, and any organization-specific statements with Tejaswi Foundation before production launch. Anonymous sample testimonials and unverifiable impact metrics are not displayed.
 
 ## Render persistence and deployment
 

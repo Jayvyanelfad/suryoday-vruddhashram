@@ -1,6 +1,7 @@
 import { promises as fs } from "node:fs";
 import path from "node:path";
 import crypto from "node:crypto";
+import { legacyImageIds, stockImages } from "./stock-photography.js";
 
 function getDataPath() {
   const configuredPath = process.env.SITE_CONTENT_PATH;
@@ -53,9 +54,10 @@ export const defaultSiteContent = {
     { id: "community", value: "Community", label: "Companionship", description: "A welcoming environment for connection and belonging." }
   ],
   gallery: [
-    { id: "g1", title: "Daily companionship", description: "Residents share meaningful time together in a calm, welcoming setting.", image: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=900&q=80" },
-    { id: "g2", title: "Wellbeing support", description: "Compassionate care and daily routines designed around comfort.", image: "https://images.unsplash.com/photo-1544022592-4f1881e4ca34?auto=format&fit=crop&w=900&q=80" },
-    { id: "g3", title: "Nutritious meals", description: "Fresh meals and hydration support for regular wellness.", image: "https://images.unsplash.com/photo-1556911220-bff31c812dba?auto=format&fit=crop&w=900&q=80" }
+    { id: "g1", title: "Indian elders sharing a moment", description: "Illustrative stock photography; not a photograph of Suryoday residents.", image: stockImages.community },
+    { id: "g2", title: "An older woman and a young family member", description: "Illustrative stock photography; not a photograph of Suryoday residents.", image: stockImages.family },
+    { id: "g3", title: "An older man enjoying time outdoors", description: "Illustrative stock photography; not a photograph of Suryoday residents.", image: stockImages.dailyLife },
+    { id: "g4", title: "An older woman outdoors in India", description: "Illustrative stock photography; not a photograph of Suryoday residents.", image: stockImages.elderWoman }
   ],
   team: [
     {
@@ -63,21 +65,21 @@ export const defaultSiteContent = {
       name: "Organization leadership",
       role: "Care coordination",
       description: "Coordinates resident support and community partnerships.",
-      image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=900&q=80"
+      image: ""
     },
     {
       id: "t2",
       name: "Care Team",
       role: "Resident support",
       description: "Daily personal care, empathy, and practical support for a safe, dignified routine.",
-      image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=900&q=80"
+      image: ""
     },
     {
       id: "t3",
       name: "Wellbeing Team",
       role: "Health & nutrition",
       description: "Monitoring health needs, nourishment, and comfort to support better daily wellbeing.",
-      image: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=900&q=80"
+      image: ""
     }
   ]
 };
@@ -136,21 +138,32 @@ function normalizeItems(value, defaults, field, fields) {
     for (const [key, maxLength] of fields) {
       normalized[key] = asText(record[key], `${field}[${index}].${key}`, maxLength);
     }
+    if (normalized.image) {
+      const legacyId = normalized.image.match(/photo-([a-z0-9-]+)/i)?.[1];
+      const replacement = legacyImageIds[field]?.[legacyId];
+      if (replacement !== undefined) normalized.image = replacement;
+    }
     if (!/^[a-zA-Z0-9_-]{1,64}$/.test(normalized.id) || ids.has(normalized.id)) {
       throw new TypeError(`${field}[${index}].id must be unique and contain only letters, numbers, underscores, or hyphens.`);
     }
     ids.add(normalized.id);
     if (field === "gallery" || field === "team") {
+      if (field === "team" && !normalized.image) return normalized;
       let image;
       try {
-        image = new URL(normalized.image);
+        if (/^\/images\/stock\/[a-z0-9-]+\.(?:jpg|webp)$/i.test(normalized.image)) {
+          image = null;
+        } else {
+          image = new URL(normalized.image);
+        }
       } catch {
-        throw new TypeError(`${field}[${index}].image must be a valid Unsplash image URL.`);
+        throw new TypeError(`${field}[${index}].image must be a valid Pexels or Unsplash image URL.`);
       }
-      if (image.protocol !== "https:" || image.hostname !== "images.unsplash.com") {
-        throw new TypeError(`${field}[${index}].image must use https://images.unsplash.com.`);
+      if (image && (image.protocol !== "https:" || !["images.unsplash.com", "images.pexels.com"].includes(image.hostname))) {
+        throw new TypeError(`${field}[${index}].image must use an approved Pexels or Unsplash HTTPS image URL.`);
       }
     }
+
     return normalized;
   }).map((item, index) => ({ ...defaults[index], ...item }));
 }
